@@ -1,52 +1,85 @@
-#include <stdlib.h>
-#include <stdarg.h>
-#include "holberton.h"
+#include "main.h"
+
 /**
- * found_reverse - reverses a string
- * @s: string to reverse
- * Return: pointer to string
+ * is_printable - Evaluates if a char is printable
+ * @c: Char to be evaluated.
+ *
+ * Return: 1 if c is printable, 0 otherwise
  */
-char *found_reverse(va_list s)
+int is_printable(char c)
 {
-	char *rstring, *hold;
-	int i, j, len;
+	if (c >= 32 && c < 127)
+		return (1);
 
-	hold = va_arg(s, char *);
-	len = _strlen(hold);
-	rstring = malloc((len + 1) * sizeof(char));
-	for (i = 0, j = len - 1; i < len; i++, j--)
-		rstring[i] = hold[j];
-
-	return (rstring);
+	return (0);
 }
 
 /**
- * found_rot13 - rotate 13 characters per character in the string
- * @s: string to rot13
- * Return: string after conversion
+ * append_hexa_code - Append ascci in hexadecimal code to buffer.
+ * @buffer: Array of chars.
+ * @i: Index at which to start appending.
+ * @ascii_code: ASSCI CODE.
+ * Return: Always 3.
  */
-char *found_rot13(va_list s)
+int append_hexa_code(char ascii_code, char buffer[], int i)
 {
-	int i, size;
-	char *arg;
-	char *hold;
-	char storeh[] = "NOPQRSTUVWXYZABCDEFGHIJKLM";
-	char storel[] = "nopqrstuvwxyzabcdefghijklm";
+	char map_to[] = "0123456789ABCDEF";
+	/* The hexa format code is always 2 digits long */
+	if (ascii_code < 0)
+		ascii_code *= -1;
 
-	arg = va_arg(s, char *);
-	size = _strlen(arg);
-	hold = malloc((size + 1) * sizeof(char));
-	for (i = 0; arg[i] != '\0'; i++)
-	{
-		if ((arg[i] >= 'A' && arg[i] <= 'Z') ||
-		    (arg[i] >= 'a' && arg[i] <= 'z'))
-		{
-			hold[i] = (arg[i] - 'A' > 25) ?
-				storel[arg[i] - 'a'] : storeh[arg[i] - 'A'];
-		}
-		else
-			hold[i] = arg[i];
-	}
-	hold[i] = '\0';
-	return (hold);
+	buffer[i++] = '\\';
+	buffer[i++] = 'x';
+
+	buffer[i++] = map_to[ascii_code / 16];
+	buffer[i] = map_to[ascii_code % 16];
+
+	return (3);
+}
+
+/**
+ * is_digit - Verifies if a char is a digit
+ * @c: Char to be evaluated.
+ *
+ * Return: 1 if c is a digit, 0 otherwise
+ */
+int is_digit(char c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+
+	return (0);
+}
+
+/**
+ * convert_size_number - Casts a number to the specified size
+ * @num: Number to be casted.
+ * @size: Number indicating the type to be casted.
+ *
+ * Return: Casted value of num
+ */
+long int convert_size_number(long int num, int size)
+{
+	if (size == S_LONG)
+		return (num);
+	else if (size == S_SHORT)
+		return ((short)num);
+
+	return ((int)num);
+}
+/**
+ * convert_size_unsgnd - Casts a number to the specified size
+ * @num: Number to be casted
+ * @size: Number indicating the type to be casted.
+ *
+ * Return: Casted value of num
+ */
+long int convert_size_unsgnd(unsigned long int num, int size)
+{
+	if (size == S_LONG)
+		return (num);
+	else if (size == S_SHORT)
+		return ((unsigned short)num);
+
+	return ((unsigned int)num);
 }
